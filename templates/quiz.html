@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Banque Populaire</title>
+
+    <!-- Inclure Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background: radial-gradient(circle at top left, #f0f9ff, #ffffff);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-y: auto;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            background-color: rgba(59, 130, 246, 0.9);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .navbar .logout-btn {
+            background-color: #f97316;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .navbar .logout-btn:hover {
+            background-color: #ea580c;
+        }
+
+        .navbar .brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 25s infinite ease-in-out;
+            z-index: 1;
+        }
+
+        .blue {
+            background-color: rgba(59, 130, 246, 0.25);
+        }
+
+        .orange {
+            background-color: rgba(249, 115, 22, 0.25);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) scale(0.8);
+                opacity: 0.4;
+            }
+
+            50% {
+                transform: translateY(-100vh) scale(1.1);
+                opacity: 0.1;
+            }
+
+            100% {
+                transform: translateY(0) scale(0.8);
+                opacity: 0.4;
+            }
+        }
+
+        .wave {
+            position: absolute;
+            width: 100%;
+            height: 150px;
+            bottom: 0;
+            background: url('https://svgshare.com/i/umT.svg') repeat-x;
+            background-size: cover;
+            opacity: 0.3;
+            animation: waveMove 15s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes waveMove {
+            0% {
+                background-position-x: 0;
+            }
+
+            100% {
+                background-position-x: 1000px;
+            }
+        }
+
+        .content {
+            z-index: 50;
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 1rem;
+            max-width: 600px;
+            margin: 4rem auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-button {
+            background-color: #f97316;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #ea580c;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar avec le bouton de déconnexion -->
+    <div class="navbar flex justify-between items-center">
+        <div class="brand">Banque Populaire</div>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Se déconnecter</a>
+    </div>
+
+    <!-- Étapes du processus -->
+    <div class="flex justify-center mt-[80px] mb-6">
+        <div class="flex space-x-4 bg-white shadow-md rounded-full px-6 py-2">
+            <!-- Étape 1 active -->
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center font-bold">1</div>
+                <span class="text-sm font-medium text-gray-600">Ragerder la vidéo</span>
+            </div>
+            <!-- Étape 2 -->
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold">2</div>
+                <span class="text-sm font-semibold text-orange-600">Passer le quiz</span>
+            </div>
+            <!-- Étape 3 -->
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center font-bold">3</div>
+                <span class="text-sm font-medium text-gray-600">Consulter le score</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Particules animées 
+    <div class="particle w-16 h-16 left-[15%] top-[80%] blue" style="animation-delay: 2s;"></div>
+    <div class="particle w-20 h-20 left-[35%] top-[90%] orange" style="animation-delay: 5s;"></div>
+    <div class="particle w-12 h-12 left-[55%] top-[85%] blue" style="animation-delay: 1s;"></div>
+    <div class="particle w-14 h-14 left-[75%] top-[95%] orange" style="animation-delay: 4s;"></div>
+    <div class="particle w-10 h-10 left-[85%] top-[88%] blue" style="animation-delay: 3s;"></div>
+
+    <div class="wave z-0"></div>-->
+
+    <div class="content" id="quiz-section">
+        <h2 class="text-xl font-bold mb-4 text-orange-600">Quiz : Sensibilisation au Phishing</h2>
+        <form id="quiz-form" action="{{ url_for('submit_quiz') }}" class="space-y-6" method="POST">
+            <!-- Question 1 -->
+            <div>
+                <p class="font-medium mb-2">1. Que signifie le terme "phishing" ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q1" value="a" class="mr-2"> Une technique de marketing</label>
+                    <label class="block"><input type="radio" name="q1" value="b" class="mr-2"> Une méthode de piratage informatique</label>
+                    <label class="block"><input type="radio" name="q1" value="c" class="mr-2"> Un outil de messagerie</label>
+                    <label class="block"><input type="radio" name="q1" value="d" class="mr-2"> Un logiciel de protection</label>
+                </div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div>
+                <p class="font-medium mb-2">2. Quel est le principal objectif d'un e-mail de phishing ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q2" value="a" class="mr-2"> Informer l'utilisateur</label>
+                    <label class="block"><input type="radio" name="q2" value="b" class="mr-2"> Installer un antivirus</label>
+                    <label class="block"><input type="radio" name="q2" value="c" class="mr-2"> Voler des informations sensibles</label>
+                    <label class="block"><input type="radio" name="q2" value="d" class="mr-2"> Réparer votre système</label>
+                </div>
+            </div>
+    
+            <!-- Question 3 -->
+            <div>
+                <p class="font-medium mb-2">3. Les messages de phishing ressemblent souvent à :</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q3" value="a" class="mr-2"> Des messages publicitaires</label>
+                    <label class="block"><input type="radio" name="q3" value="b" class="mr-2"> Des messages de jeux en ligne</label>
+                    <label class="block"><input type="radio" name="q3" value="c" class="mr-2"> Des messages officiels ou professionnels</label>
+                    <label class="block"><input type="radio" name="q3" value="d" class="mr-2"> Des newsletters</label>
+                </div>
+            </div>
+    
+            <!-- Question 4 -->
+            <div>
+                <p class="font-medium mb-2">4. Pourquoi les pirates créent-ils des faux sites web ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q4" value="a" class="mr-2"> Pour diffuser des promotions</label>
+                    <label class="block"><input type="radio" name="q4" value="b" class="mr-2"> Pour tester les compétences des internautes</label>
+                    <label class="block"><input type="radio" name="q4" value="c" class="mr-2"> Pour récolter vos données personnelles</label>
+                    <label class="block"><input type="radio" name="q4" value="d" class="mr-2"> Pour héberger des vidéos</label>
+                </div>
+            </div>
+    
+            <!-- Question 5 -->
+            <div>
+                <p class="font-medium mb-2">5. Que peut contenir une pièce jointe piégée ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q5" value="a" class="mr-2"> Une publicité</label>
+                    <label class="block"><input type="radio" name="q5" value="b" class="mr-2"> Un mot de passe</label>
+                    <label class="block"><input type="radio" name="q5" value="c" class="mr-2"> Un virus</label>
+                    <label class="block"><input type="radio" name="q5" value="d" class="mr-2"> Un antivirus</label>
+                </div>
+            </div>
+    
+            <!-- Question 6 -->
+            <div>
+                <p class="font-medium mb-2">6. Comment vérifier l'authenticité d'un lien dans un e-mail ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q6" value="a" class="mr-2"> En cliquant dessus rapidement</label>
+                    <label class="block"><input type="radio" name="q6" value="b" class="mr-2"> En l'ouvrant dans une autre application</label>
+                    <label class="block"><input type="radio" name="q6" value="c" class="mr-2"> En le tapant manuellement dans votre navigateur</label>
+                    <label class="block"><input type="radio" name="q6" value="d" class="mr-2"> En l'envoyant à un ami</label>
+                </div>
+            </div>
+    
+            <!-- Question 7 -->
+            <div>
+                <p class="font-medium mb-2">7. Quel détail peut trahir une fausse adresse e-mail ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q7" value="a" class="mr-2"> Une pièce jointe</label>
+                    <label class="block"><input type="radio" name="q7" value="b" class="mr-2"> Une image floue</label>
+                    <label class="block"><input type="radio" name="q7" value="c" class="mr-2"> Une lettre différente dans le nom de domaine</label>
+                    <label class="block"><input type="radio" name="q7" value="d" class="mr-2"> Un point d'exclamation</label>
+                </div>
+            </div>
+    
+            <!-- Question 8 -->
+            <div>
+                <p class="font-medium mb-2">8. Les fautes d'orthographe dans un e-mail peuvent être un signe de :</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q8" value="a" class="mr-2"> Vitesse de rédaction</label>
+                    <label class="block"><input type="radio" name="q8" value="b" class="mr-2"> Message personnel</label>
+                    <label class="block"><input type="radio" name="q8" value="c" class="mr-2"> Message frauduleux</label>
+                    <label class="block"><input type="radio" name="q8" value="d" class="mr-2"> Problème de clavier</label>
+                </div>
+            </div>
+    
+            <!-- Question 9 -->
+            <div>
+                <p class="font-medium mb-2">9. Que faire si vous recevez un e-mail suspect ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q9" value="a" class="mr-2"> Ignorer le message</label>
+                    <label class="block"><input type="radio" name="q9" value="b" class="mr-2"> Le signaler comme spam</label>
+                    <label class="block"><input type="radio" name="q9" value="c" class="mr-2"> Répondre immédiatement</label>
+                    <label class="block"><input type="radio" name="q9" value="d" class="mr-2"> Cliquer sur tous les liens</label>
+                </div>
+            </div>
+
+            <!-- Question 10 -->
+            <div>
+                <p class="font-medium mb-2">10. Quel est le rôle d'un logiciel antivirus dans la protection contre le phishing ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q10" value="a" class="mr-2"> Détecter les liens malveillants</label>
+                    <label class="block"><input type="radio" name="q10" value="b" class="mr-2"> Bloquer tous les e-mails</label>
+                    <label class="block"><input type="radio" name="q10" value="c" class="mr-2"> Fournir une protection complète contre tous les types de cyberattaques</label>
+                    <label class="block"><input type="radio" name="q10" value="d" class="mr-2"> Prévenir l'ouverture de fichiers ZIP</label>
+                </div>
+            </div>
+
+            <!-- Question 11 -->
+            <div>
+                <p class="font-medium mb-2">11. Quel est le danger si vous entrez vos identifiants sur un faux site ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q11" value="a" class="mr-2"> Rien ne se passe</label>
+                    <label class="block"><input type="radio" name="q11" value="b" class="mr-2"> Le site vous redirige</label>
+                    <label class="block"><input type="radio" name="q11" value="c" class="mr-2"> Les cybercriminels obtiennent vos données</label>
+                    <label class="block"><input type="radio" name="q11" value="d" class="mr-2"> Vous recevez une récompense</label>
+                </div>
+            </div>
+
+            <!-- Question 12 -->
+            <div>
+                <p class="font-medium mb-2">12. Une seule action peut entraîner un vol de données. Laquelle ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q12" value="a" class="mr-2"> Fermer un onglet</label>
+                    <label class="block"><input type="radio" name="q12" value="b" class="mr-2"> Lire un e-mail</label>
+                    <label class="block"><input type="radio" name="q12" value="c" class="mr-2"> Cliquer sur un lien frauduleux</label>
+                    <label class="block"><input type="radio" name="q12" value="d" class="mr-2"> Éteindre son ordinateur</label>
+                </div>
+            </div>
+
+            <!-- Question 13 -->
+            <div>
+                <p class="font-medium mb-2">13. Qu'est-ce qu'un bon réflexe face à un e-mail douteux ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q13" value="a" class="mr-2"> L'ouvrir rapidement</label>
+                    <label class="block"><input type="radio" name="q13" value="b" class="mr-2"> Télécharger la pièce jointe</label>
+                    <label class="block"><input type="radio" name="q13" value="c" class="mr-2"> Vérifier l'adresse de l'expéditeur</label>
+                    <label class="block"><input type="radio" name="q13" value="d" class="mr-2"> Répondre en demandant des précisions</label>
+                </div>
+            </div>
+
+            <!-- Question 14 -->
+            <div>
+                <p class="font-medium mb-2">14. Quel type de fichier peut contenir un virus ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q14" value="a" class="mr-2"> Un fichier audio</label>
+                    <label class="block"><input type="radio" name="q14" value="b" class="mr-2"> Un fichier image</label>
+                    <label class="block"><input type="radio" name="q14" value="c" class="mr-2"> Un fichier Word ou PDF</label>
+                    <label class="block"><input type="radio" name="q14" value="d" class="mr-2"> Un lien vers un site connu</label>
+                </div>
+            </div>
+
+            <!-- Question 15 -->
+            <div>
+                <p class="font-medium mb-2">15. Quelle attitude faut-il adopter face aux tentatives de phishing ?</p>
+                <div class="space-y-2">
+                    <label class="block"><input type="radio" name="q15" value="a" class="mr-2"> La panique</label>
+                    <label class="block"><input type="radio" name="q15" value="b" class="mr-2"> La distraction</label>
+                    <label class="block"><input type="radio" name="q15" value="c" class="mr-2"> L'attention et la vérification</label>
+                    <label class="block"><input type="radio" name="q15" value="d" class="mr-2"> La confiance aveugle</label>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-center mt-6">
+                <button type="submit" class="cta-button inline-block">Soumettre le quiz</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

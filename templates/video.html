@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidéo - Banque Populaire</title>
+
+    <!-- Inclure Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background: radial-gradient(circle at top left, #f0f9ff, #ffffff);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-y: auto;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            background-color: rgba(59, 130, 246, 0.9);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .navbar .logout-btn {
+            background-color: #f97316;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .navbar .logout-btn:hover {
+            background-color: #ea580c;
+        }
+
+        .navbar .brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 25s infinite ease-in-out;
+        }
+
+        .blue {
+            background-color: rgba(59, 130, 246, 0.25);
+        }
+
+        .orange {
+            background-color: rgba(249, 115, 22, 0.25);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) scale(0.8);
+                opacity: 0.4;
+            }
+
+            50% {
+                transform: translateY(-100vh) scale(1.1);
+                opacity: 0.1;
+            }
+
+            100% {
+                transform: translateY(0) scale(0.8);
+                opacity: 0.4;
+            }
+        }
+
+        .wave {
+            position: absolute;
+            width: 100%;
+            height: 150px;
+            bottom: 0;
+            background: url('https://svgshare.com/i/umT.svg') repeat-x;
+            background-size: cover;
+            opacity: 0.3;
+            animation: waveMove 15s linear infinite;
+        }
+
+        @keyframes waveMove {
+            0% {
+                background-position-x: 0;
+            }
+
+            100% {
+                background-position-x: 1000px;
+            }
+        }
+
+        .video-container {
+            max-width: 800px;
+            width: 100%;
+            padding-top: 45.25%;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+        }
+
+        .content {
+            z-index: 10;
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 1rem;
+            max-width: 600px;
+            margin: 4rem auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-button {
+            background-color: #f97316;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #ea580c;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar avec le bouton de déconnexion -->
+    <div class="navbar flex justify-between items-center">
+        <div class="brand">Banque Populaire</div>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Se déconnecter</a>
+    </div>
+
+    <!-- Étapes du processus -->
+    <div class="flex justify-center mt-[80px] mb-6">
+        <div class="flex space-x-4 bg-white shadow-md rounded-full px-6 py-2">
+            <!-- Étape 1 active -->
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold">1</div>
+                <span class="text-sm font-semibold text-orange-600">Regarder la vidéo</span>
+            </div>
+            <!-- Étape 2 -->
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center font-bold">2</div>
+                <span class="text-sm font-medium text-gray-600">Passer le quiz</span>
+            </div>
+            <!-- Étape 3 -->
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center font-bold">3</div>
+                <span class="text-sm font-medium text-gray-600">Voir le corrigé</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Particules animées -->
+    <div class="particle w-16 h-16 left-[15%] top-[80%] blue" style="animation-delay: 2s;"></div>
+    <div class="particle w-20 h-20 left-[35%] top-[90%] orange" style="animation-delay: 5s;"></div>
+    <div class="particle w-12 h-12 left-[55%] top-[85%] blue" style="animation-delay: 1s;"></div>
+    <div class="particle w-14 h-14 left-[75%] top-[95%] orange" style="animation-delay: 4s;"></div>
+    <div class="particle w-10 h-10 left-[85%] top-[88%] blue" style="animation-delay: 3s;"></div>
+
+    <div class="wave z-0"></div>
+
+    <!-- Conteneur principal avec vidéo -->
+    <div class="content">
+        <div class="mb-6 inline-block px-4 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold shadow">
+            Campagne de sensibilisation 2025
+        </div>
+
+        <h1 class="text-2xl md:text-5xl font-extrabold text-orange-600 mb-4">
+            Qu'est-ce que le Phishing?
+        </h1>
+
+        <!-- Conteneur vidéo -->
+        <div class="video-container mb-6">
+            <video controls>
+                <source src="{{ url_for('static', filename='video.mp4') }}" type="video/mp4">
+                Votre navigateur ne supporte pas la lecture de vidéos.
+            </video>
+        </div>
+    </div>
+<!-- Section d'appel à l'action -->
+<div class="content mt-0">
+    <h2 class="text-lg md:text-2xl font-semibold text-gray-800 mb-4">
+        Êtes-vous prêt(e) à tester vos connaissances ?
+    </h2>
+    <a href="{{ url_for('quiz') }}" class="cta-button inline-block">
+        Passer au quiz
+    </a>
+</div>
+
+
+
+</body>
+</html>
