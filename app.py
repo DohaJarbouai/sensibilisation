@@ -16,9 +16,9 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'bcp2'
+app.config['MYSQL_DB'] = 'bcpp2'
 # Configuration de la gestion des sessions
-app.config['SECRET_KEY'] = 'hellooo'  # clé secrète pour signer les sessions
+app.config['SECRET_KEY'] = 'blablabla'  # clé secrète pour signer les sessions
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)  # Expiration de la session après 30 minutes
 
 
@@ -110,83 +110,6 @@ def register():
 
     return render_template('register.html')  # Redirection vers la page des responsables
 
-def get_user_by_email(email):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
-    user = cursor.fetchone()
-    cursor.close()
-    return user
-
-
-@app.route('/forgot-password', methods=['GET', 'POST'])
-def forgot_password():
-    if request.method == 'POST':
-        email = request.form['email']
-
-        # TODO : Vérifie si cet email existe dans ta base de données
-        user = get_user_by_email(email)  # Exemple fictif
-
-        if user:
-            token = s.dumps(email, salt='reset-password')
-            reset_url = url_for('reset_password', token=token, _external=True)
-
-            msg = Message('Réinitialisation de votre mot de passe',
-                          sender='ton.email@gmail.com',
-                          recipients=[email])
-            msg.body = f'Bonjour,\n\nCliquez sur le lien suivant pour réinitialiser votre mot de passe :\n{reset_url}\n\nCe lien expire dans 30 minutes.'
-            mail.send(msg)
-
-        flash('Si l’adresse e-mail est correcte, un lien vous a été envoyé.')
-        return redirect(url_for('login'))
-
-    return render_template('forgot_password.html')
-
-
-# Configuration pour l'envoi d'e-mails (exemple avec Gmail)
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'jarbouaidoha@gmail.com'
-app.config['MAIL_PASSWORD'] = 'leao kphx jwho giwg'  # mot de passe d'application
-
-mail = Mail(app)
-s = URLSafeTimedSerializer(app.secret_key)
-
-def update_user_password(email, new_password):
-    hashed_password = generate_password_hash(new_password)
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("UPDATE users SET password = %s WHERE email = %s", (hashed_password, email))
-    mysql.connection.commit()
-    cursor.close()
-
-@app.route('/reset-password/<token>', methods=['GET', 'POST'])
-def reset_password(token):
-    try:
-        email = s.loads(token, salt='reset-password', max_age=1800)  # lien valide 30 minutes
-    except Exception as e:
-        flash("Le lien a expiré ou est invalide.", "danger")
-        return redirect(url_for('forgot_password'))
-
-    if request.method == 'POST':
-        password = request.form['password']
-        confirm = request.form['confirm_password']
-
-        if password != confirm:
-            flash("Les mots de passe ne correspondent pas.", "danger")
-            return redirect(request.url)
-
-        # Hasher et mettre à jour le mot de passe dans la base de données
-        hashed_pw = generate_password_hash(password)
-
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("UPDATE users SET password = %s WHERE email = %s", (hashed_pw, email))
-        mysql.connection.commit()
-        cursor.close()
-
-        flash("Mot de passe réinitialisé avec succès.", "success")
-        return redirect(url_for('login'))
-
-    return render_template('reset_password.html')
 
 
 
